@@ -48,26 +48,6 @@ FFL_STRUCT = '1s2s3s2s2s5s'
 FIELD_NAMES = ['FFLNumber', 'LicenseName', 'BusinessName', 'BusinessStreet', 'BusinessCity', 'BusinessState',
                'BusinessZipCode', 'MailingStreet', 'MailingCity', 'MailingState', 'MailingZipCode', 'Telephone',
                'LOAIssueDate', 'LOAExpirationDate']
-FFL_DISTRICTS = {
-    1: 'Southeast',
-    3: 'Midwest',
-    4: 'Central',
-    5: 'Southwest',
-    6: 'North Atlantic',
-    8: 'Mid Atlantic',
-    9: 'Western',
-}
-FFL_TYPES = {
-    1: 'Dealer',
-    2: 'Pawnbroker',
-    3: 'Collector of Curios and Relics',
-    6: 'Manufacturer of Ammunition',
-    7: 'Manufacturer of Firearms',
-    8: 'Importer of Firearms',
-    9: 'Dealer in Destructive Devices',
-    10: 'Manufacturer of Destructive Devices',
-    11: 'Importer of Destructive Devices',
-}
 
 
 def parse_ffl_number(ffl_number, parse_values=True):
