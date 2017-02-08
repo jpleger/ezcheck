@@ -155,7 +155,6 @@ def download_ffl_db(ffl_number, filename=None):
     ffl = parse_ffl_number(ffl_number, parse_values=False)
     for field, value in FFL_DOWNLOAD_OPTION_MAPPING.items():
         params[field] = ffl[value]
-    print params
     # Post to the ATF url to start the download
     request = requests.post(FFL_DOWNLOAD_URL, params=params, verify=False)
 
