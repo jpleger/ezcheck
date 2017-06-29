@@ -20,7 +20,7 @@ test_requirements = [
 
 setup(
     name='ezcheck',
-    version='0.2.0',
+    version='0.2.1',
     description="Library for downloading, validating federal firearms licensees using the ATF eZCheck application.",
     long_description=readme + '\n\n' + history,
     author="James Pleger",
