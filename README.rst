@@ -16,7 +16,7 @@ Library for downloading, validating federal firearms licensees using the ATF eZC
 Features
 --------
 
-* TODO
+* CLI App to download FFL db from ATF
 
 Credits
 ---------
