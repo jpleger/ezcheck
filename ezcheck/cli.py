@@ -14,7 +14,7 @@ def download_ffl_database():
     parser.add_argument("filename", help="filename to download file to")
     args = parser.parse_args()
     print "Downloading FFL"
-    ffl = str(args.ffl).replace('-','')
+    ffl = args.ffl
     file_path = download_ffl_db(ffl, args.filename)
     print "Downloaded FFL Database to: %s" % file_path
 
