@@ -57,9 +57,9 @@ def parse_ffl_number(ffl_number, parse_values=True):
     :param parse_values: Parse the values as an int or string, int is useful for working in databases
     :return: dict of parsed FFL number
     """
-    ffl_number.replace('-', '')
+    ffl_number = ffl_number.replace('-', '')
     if len(ffl_number) != 15:
-        raise ValueError('Invalid ffl Length')
+        raise ValueError('Invalid ffl Length: %s' % len(ffl_number))
     if parse_values:
         render = int
     else:
@@ -70,7 +70,8 @@ def parse_ffl_number(ffl_number, parse_values=True):
         'FFLCounty': render(ffl_number[3:6]),
         'FFLType': render(ffl_number[6:8]),
         'FFLExpiration': ffl_number[8:10],
-        'FFLSequence': render(ffl_number[10:])
+        'FFLSequence': render(ffl_number[10:]),
+        'FFLNumber': ffl_number,
     }
 
 
