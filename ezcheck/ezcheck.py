@@ -59,7 +59,7 @@ def parse_ffl_number(ffl_number, parse_values=True):
     """
     ffl_number = ffl_number.replace('-', '')
     if len(ffl_number) != 15:
-        raise ValueError('Invalid ffl Length: %s' % len(ffl_number))
+        raise ValueError('Invalid ffl Length: %s for %s' % (len(ffl_number), ffl_number))
     if parse_values:
         render = int
     else:
@@ -139,33 +139,38 @@ def parse_row(row):
     return parsed_entry
 
 
-def download_ffl_db(ffl_number, filename=None):
+def download_ffl_db(ffl_number, filename=None, file_object=None):
     """
     Uses requests to download a copy of the current FFL licensees
 
     :param ffl_number: What the FFL number to download the file is
     :param filename: which file it should be output to
+    :param file_object: A file like object passed to the function will override any filenames that are set
     :return: filename that was written to
     """
-    if not filename:
+    # If no filename is specified and no file object specified, create a temp file for the download filename
+    if not filename and not file_object:
         filename = tempfile.mkstemp(prefix='ffl-')[1]
-    logger.info('Starting download from ATF site to %s' % filename)
+
+    # If no file_object is passed, create a new file like object
+    if not file_object:
+        file_object = open(filename, 'w')
+
     params = {'Search': 'Download'}
     # Parse and properly map the FFL number to the correct fields so we can download the file.
 
+    logger.info('Starting download from ATF site using %s' % file_object)
     ffl = parse_ffl_number(ffl_number, parse_values=False)
     for field, value in FFL_DOWNLOAD_OPTION_MAPPING.items():
         params[field] = ffl[value]
     # Post to the ATF url to start the download
     request = requests.post(FFL_DOWNLOAD_URL, params=params, verify=False)
 
-    # Validate that the file has downloaded
+    # Validate that the file has started to download
     if 'content-disposition' not in request.headers or 'attachment' not in request.headers['content-disposition']:
-        open('%s.error' % filename, 'w').write(request.content)
+        file_object.write(request.content)
         logger.fatal('We received an invalid response from the ATF... Aborting')
-        logger.fatal('Error Response: %s.error' % filename)
         raise ValueError("Invalid Response from ATF")
-    open(filename, 'w').write(request.content)
-    logger.debug('Wrote %s to %s' % (len(request.content), filename))
-    logger.info('Successfully downloaded file to: %s' % filename)
-    return filename
+    file_object.write(request.content)
+    logger.debug('Wrote %s to %s' % (len(request.content), file_object.name))
+    return file_object
