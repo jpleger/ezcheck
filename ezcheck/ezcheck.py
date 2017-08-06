@@ -172,5 +172,5 @@ def download_ffl_db(ffl_number, filename=None, file_object=None):
         logger.fatal('We received an invalid response from the ATF... Aborting')
         raise ValueError("Invalid Response from ATF")
     file_object.write(request.content)
-    logger.debug('Wrote %s to %s' % (len(request.content), file_object.name))
+    logger.debug('Wrote %s bytes' % len(request.content))
     return file_object
