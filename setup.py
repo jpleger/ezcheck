@@ -34,6 +34,7 @@ setup(
     entry_points={
         'console_scripts': [
             'ezcheck-download=ezcheck.cli:download_ffl_database',
+            'ezcheck-validate=ezcheck.cli:validate_data',
         ]
     },
     include_package_data=True,

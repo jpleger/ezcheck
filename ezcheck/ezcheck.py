@@ -135,7 +135,11 @@ def parse_row(row):
     parsed_entry.update(parse_ffl_number(parsed_entry.get('FFLNumber')))
 
     # Cleanup the telephone as a int
-    parsed_entry['Telephone'] = int(parsed_entry.get('Telephone'))
+    # Who knew telephones were optional... :)
+    try:
+        parsed_entry['Telephone'] = int(parsed_entry.get('Telephone'))
+    except ValueError:
+        parsed_entry['Telephone'] = 0
     return parsed_entry
 
 
