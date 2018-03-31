@@ -29,8 +29,7 @@ setup(
     packages=[
         'ezcheck',
     ],
-    package_dir={'ezcheck':
-                 'ezcheck'},
+    py_modules=['ezcheck.cli', 'ezcheck.core'],
     entry_points={
         'console_scripts': [
             'ezcheck-download=ezcheck.cli:download_ffl_database',

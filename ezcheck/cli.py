@@ -1,59 +1,74 @@
 # -*- coding: utf-8 -*-
 import logging
 import argparse
-from ezcheck import download_ffl_db, parse_row
 import os
-logger = logging.getLogger('ezcheck')
-logger.setLevel(logging.DEBUG)  # Collect all log levels
-logger.addHandler(logging.NullHandler())  # Set the default logger to be a nullhandler
+import sys
+import json
+from ezcheck.core import download_ffl_db, parse_file, parse_ffl_number
+from ezcheck.core import logger, CONSOLE_LOG_FORMATTER, DEBUG_LOG_FORMATTER
+
+
+parent_parser = argparse.ArgumentParser(add_help=False)
+parent_parser.add_argument('-v', '--verbose', action='store_true', dest='verbose',
+                           help='verbose mode (loglevel: debug)')
+parent_parser.add_argument('-s', '--silent', action='store_true', dest='silent',
+                           help='disable console output')
+parent_parser.add_argument('-l', '--log', default=None, dest='logfile', help='logfile to write to')
+
+
+def setup_logging(args):
+    if not args.silent:
+        stream_handler = logging.StreamHandler()
+        stream_handler.setFormatter(CONSOLE_LOG_FORMATTER)
+        logger.addHandler(stream_handler)
+    if args.verbose:
+        logger.setLevel(logging.DEBUG)
+    if args.logfile:
+        file_handler = logging.FileHandler(args.logfile)
+        file_handler.setFormatter(DEBUG_LOG_FORMATTER)
+        logger.addHandler(file_handler)
 
 
 def download_ffl_database():
     """Download FFL List from ATF.gov"""
-    parser = argparse.ArgumentParser()
-    parser.add_argument("ffl", help="FFL number")
-    parser.add_argument("filename", help="filename to download file to")
+    parser = argparse.ArgumentParser(parents=[parent_parser, ])
+    parser.add_argument('-t', '--testing', action='store_true', dest='testing')
+    parser.add_argument('ffl', help='FFL Number')
+    parser.add_argument('filename', help='filename to write download')
     args = parser.parse_args()
-    print("Downloading FFL")
-    file_obj = download_ffl_db(args.ffl, args.filename)
-    print("Downloaded FFL Database to: %s" % file_obj.name)
+    setup_logging(args)
+    logger.debug('FFL: %s' % args.ffl)
+    try:
+        parse_ffl_number(args.ffl)
+    except ValueError:
+        logger.critical('Invalid FFL')
+        sys.exit(-1)
+    logger.info("Downloading FFL")
+    file_object = open(args.filename, 'wb+')
+    download_ffl_db(args.ffl, file_object)
+    logger.info("Downloaded FFL Database to: %s" % file_object.name)
+
+
+def dump_json():
+    parser = argparse.ArgumentParser(parents=[parent_parser, ])
+    args = parser.parse_args()
+    setup_logging(args)
 
 
 def validate_data():
     """Parse a downloaded file from atf.gov"""
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(parents=[parent_parser, ])
     parser.add_argument("filename", help="filename to parse/validate")
     args = parser.parse_args()
+    setup_logging(args)
     if not os.path.isfile(args.filename):
-        print("File doesn't exist: %s" % args.filename)
-    print("Opening %s" % args.filename)
-    unparsed_rows = [x for x in open(args.filename, 'r').readlines() if x and x != '\n']
-    parsed_rows = []
-    failed_rows = []
-    exception_rows = []
-    for i in unparsed_rows:
-        try:
-            if parse_row(i):
-                parsed_rows.append(i)
-            else:
-                failed_rows.append(repr(i))
-        except Exception as e:
-            exception_rows.append((i, e))
-    print("Successfully parsed %s of %s rows [Failures: %s, Exceptions: %s]" % (
-        len(parsed_rows),
-        len(unparsed_rows),
-        len(failed_rows),
-        len(exception_rows),
-    ))
-    if failed_rows:
-        print("--- Rows failing parser:")
-        print("\n".join(failed_rows))
-    if exception_rows:
-        print("--- Rows throwing python exceptions:")
-        print("\n".join([x for x, y in exception_rows]))
-        for row, exception in exception_rows:
-            print("Row: {}\n--- Exception ---\n{}").format(row, exception)
+        logger.critical("File doesn't exist: %s" % args.filename)
+    logger.info("Opening %s" % args.filename)
+    parsed_data = parse_file(open(args.filename, 'r'))
+    logger.info('Finished Load')
+    logger.info(json.dumps(parsed_data[0], sort_keys=True, indent=4, separators=(',', ': ')))
+    logger.info(json.dumps(parsed_data[-1], sort_keys=True, indent=4, separators=(',', ': ')))
 
 
 if __name__ == '__main__':
-    download_ffl_database()
+    sys.exit(-1)

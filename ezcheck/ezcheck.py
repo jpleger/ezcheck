@@ -27,20 +27,7 @@ FFL_DOWNLOAD_OPTION_MAPPING = {
 DEFAULT_FILENAME = '/tmp/ffldb-%s' % time.strftime('%Y-%m-%d')
 
 
-# ffl Number (License Number)	1-15
-# License Name	16-65
-# Business Name	66-115
-# Business Street	116-165
-# Business City	166-195
-# Business State	196-197
-# Business Zip Code	198-206
-# Mailing Street	207-256
-# Mailing City	257-286
-# Mailing State	287-288
-# Mailing Zip Code	289-297
-# Voice Telephone	298-307
-# LOA Issue Date	308-315(MMDDYYYY)
-# LOA Expiration Date	316-323(MMDDYYYY)
+
 #
 # We take the slices and offsets that are provided by the ATF to create a usable db
 OFFSET_STRUCT = '15s50s50s50s30s2s9s50s30s2s9s10s8s8s'
