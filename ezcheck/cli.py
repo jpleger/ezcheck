@@ -14,9 +14,9 @@ def download_ffl_database():
     parser.add_argument("ffl", help="FFL number")
     parser.add_argument("filename", help="filename to download file to")
     args = parser.parse_args()
-    print "Downloading FFL"
+    print("Downloading FFL")
     file_obj = download_ffl_db(args.ffl, args.filename)
-    print "Downloaded FFL Database to: %s" % file_obj.name
+    print("Downloaded FFL Database to: %s" % file_obj.name)
 
 
 def validate_data():
@@ -25,8 +25,8 @@ def validate_data():
     parser.add_argument("filename", help="filename to parse/validate")
     args = parser.parse_args()
     if not os.path.isfile(args.filename):
-        print "File doesn't exist: %s" % args.filename
-    print "Opening %s" % args.filename
+        print("File doesn't exist: %s" % args.filename)
+    print("Opening %s" % args.filename)
     unparsed_rows = [x for x in open(args.filename, 'r').readlines() if x and x != '\n']
     parsed_rows = []
     failed_rows = []
@@ -39,20 +39,20 @@ def validate_data():
                 failed_rows.append(repr(i))
         except Exception as e:
             exception_rows.append((i, e))
-    print "Successfully parsed %s of %s rows [Failures: %s, Exceptions: %s]" % (
+    print("Successfully parsed %s of %s rows [Failures: %s, Exceptions: %s]" % (
         len(parsed_rows),
         len(unparsed_rows),
         len(failed_rows),
         len(exception_rows),
-    )
+    ))
     if failed_rows:
-        print "--- Rows failing parser:"
-        print "\n".join(failed_rows)
+        print("--- Rows failing parser:")
+        print("\n".join(failed_rows))
     if exception_rows:
-        print "--- Rows throwing python exceptions:"
-        print "\n".join([x for x, y in exception_rows])
+        print("--- Rows throwing python exceptions:")
+        print("\n".join([x for x, y in exception_rows]))
         for row, exception in exception_rows:
-            print "Row: %s\n--- Exception ---\n%s" % (row, exception)
+            print("Row: {}\n--- Exception ---\n{}").format(row, exception)
 
 
 if __name__ == '__main__':

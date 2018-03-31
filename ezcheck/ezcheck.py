@@ -14,7 +14,7 @@ logger.setLevel(logging.DEBUG)  # Collect all log levels
 logger.addHandler(logging.NullHandler())  # Set the default logger to be a nullhandler
 CONSOLE_LOG_FORMATTER = logging.Formatter('%(asctime)s: %(message)s')
 DEBUG_LOG_FORMATTER = logging.Formatter('[%(funcName)s-%(levelname)s] %(asctime)s: %(message)s')
-FFL_DOWNLOAD_URL = 'https://www.atfonline.gov/fflezcheck/fflDownload.do'
+FFL_DOWNLOAD_URL = 'https://fflezcheck.atf.gov/fflezcheck/fflDownload.do'
 FFL_DOWNLOAD_OPTION_MAPPING = {
     'licRegn': 'FFLRegion',
     'licDist': 'FFLDistrict',
@@ -158,7 +158,7 @@ def download_ffl_db(ffl_number, filename=None, file_object=None):
 
     # If no file_object is passed, create a new file like object
     if not file_object:
-        file_object = open(filename, 'w')
+        file_object = open(filename, 'wb')
 
     params = {'Search': 'Download'}
     # Parse and properly map the FFL number to the correct fields so we can download the file.
@@ -168,8 +168,7 @@ def download_ffl_db(ffl_number, filename=None, file_object=None):
     for field, value in FFL_DOWNLOAD_OPTION_MAPPING.items():
         params[field] = ffl[value]
     # Post to the ATF url to start the download
-    request = requests.post(FFL_DOWNLOAD_URL, params=params, verify=False)
-
+    request = requests.post(FFL_DOWNLOAD_URL, data=params, verify=False)
     # Validate that the file has started to download
     if 'content-disposition' not in request.headers or 'attachment' not in request.headers['content-disposition']:
         file_object.write(request.content)
