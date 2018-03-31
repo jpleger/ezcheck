@@ -1,8 +1,15 @@
 # Intellij
 .idea
 *.iml
+
 # misc
 test.db
+test*.txt
+temp*.txt
+download*.txt
+test.py
+temp*.json
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

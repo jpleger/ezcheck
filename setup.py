@@ -20,7 +20,7 @@ test_requirements = [
 
 setup(
     name='ezcheck',
-    version='0.5.0',
+    version='1.0.0',
     description="Library for downloading, validating federal firearms licensees using the ATF eZCheck application.",
     long_description=readme + '\n\n' + history,
     author="James Pleger",
@@ -29,8 +29,7 @@ setup(
     packages=[
         'ezcheck',
     ],
-    package_dir={'ezcheck':
-                 'ezcheck'},
+    py_modules=['ezcheck.cli', 'ezcheck.core'],
     entry_points={
         'console_scripts': [
             'ezcheck-download=ezcheck.cli:download_ffl_database',
